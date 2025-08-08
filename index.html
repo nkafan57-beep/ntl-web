@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>نظام المسموح بهم فقط</title>
+  <title>واجهة تسجيل دخول - نظام المسموح بهم فقط</title>
   <style>
     body {
       margin: 0;
@@ -13,14 +13,26 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #fff;
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       flex-direction: column;
+      padding-top: 50px;
     }
     @keyframes fieryGradient {
       0% {background-position: 0% 50%;}
       50% {background-position: 100% 50%;}
       100% {background-position: 0% 50%;}
+    }
+    .tabs {
+      display: flex;
+      gap: 20px;
+      background: rgba(20, 0, 0, 0.7);
+      padding: 15px 25px;
+      border-radius: 14px;
+      box-shadow: 0 0 20px #ff000080, 0 0 40px #8b000080;
+      margin-bottom: 30px;
+      backdrop-filter: blur(6px);
+      animation: fadeInUpSmooth 1.5s forwards;
     }
     .container {
       background: rgba(20, 0, 0, 0.7);
@@ -31,7 +43,9 @@
       text-align: center;
       animation: fadeInUpSmooth 1.5s forwards;
     }
-    .hidden { display: none; }
+    .hidden {
+      display: none;
+    }
     h2 {
       margin-bottom: 30px;
       font-weight: 900;
@@ -60,216 +74,143 @@
       overflow: hidden;
       animation: fadeInUpSmooth 1.5s forwards;
     }
+    button::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(45deg);
+      transition: all 0.7s ease;
+      pointer-events: none;
+      filter: blur(8px);
+      opacity: 0;
+    }
+    button:hover::before {
+      opacity: 1;
+      left: 100%;
+    }
     button:hover {
       background: linear-gradient(45deg, #ff4c4c, #aa0000);
       box-shadow: 0 8px 30px #ff1a1acc;
       transform: scale(1.07);
       animation: none;
     }
-    input[type="text"],
-    input[type="password"],
-    textarea {
-      width: 90%;
-      padding: 12px 20px;
-      margin: 10px auto;
-      display: block;
+    #guestBtn {
+      animation-delay: 0.5s;
+    }
+    #allowedBtn {
+      animation-delay: 0.8s;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       font-size: 1rem;
-      outline: none;
-      box-shadow: inset 0 0 8px #ff0000cc;
-      background: rgba(30, 0, 0, 0.8);
-      color: #fff;
     }
-    .tabs-container {
-      position: fixed;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      background: rgba(20, 0, 0, 0.8);
-      box-shadow: 0 0 20px #ff0000aa;
-      border-radius: 0 0 20px 20px;
-      padding: 10px;
+    @keyframes fadeInUpSmooth {
+      0% {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(-10px);
+      }
+      80% {
+        transform: translateY(5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .main-buttons {
       display: flex;
-      justify-content: space-around;
-      backdrop-filter: blur(6px);
-      z-index: 999;
+      flex-direction: column;
+      gap: 15px;
+      background: rgba(20, 0, 0, 0.7);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 0 20px #ff000066, 0 0 40px #8b000066;
+      margin-top: 20px;
+      width: 300px;
     }
-    .tabs-container button {
-      width: auto;
-      padding: 10px 20px;
-      margin: 0;
-      font-size: 14px;
-    }
-    #publishBtn {
-      margin-top: 30px;
-      width: 60%;
-      align-self: center;
-    }
-    .script-box {
+    .publish-box {
       background: rgba(50, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 12px;
-      margin: 20px 0;
-      box-shadow: 0 0 10px #ff0000aa;
-    }
-    .script-box button {
-      margin-top: 10px;
-      font-size: 14px;
+      padding: 25px;
+      margin-top: 25px;
+      border-radius: 18px;
+      box-shadow: 0 0 25px #ff000055, 0 0 50px #8b000055;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div id="mainPage" class="container">
-    <h2>تسجيل دخول</h2>
+  <div class="tabs">
     <button id="guestBtn">geust</button>
     <button id="allowedBtn">المسموح بهم فقط</button>
+  </div>  <div id="mainPage" class="container">
+    <h2>تسجيل دخول</h2>
+    <p>اختر أحد الخيارات بالأعلى</p>
   </div>  <div id="allowedPage" class="container hidden">
     <h2>المسموح بهم فقط</h2>
     <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" />
     <input type="password" id="password" placeholder="كلمة المرور" autocomplete="off" />
     <button id="loginBtn">تأكيد</button>
-    <div class="error-msg" id="errorMsg">الاسم أو كلمة المرور غير صحيحة!</div>
-    <div class="success-msg" id="successMsg">تم تسجيل الدخول بنجاح! مرحباً عزوز.</div>
-  </div>  <div id="mainInterface" class="hidden">
-    <div class="tabs-container">
-      <button onclick="switchTab('support')">الدعم الفني</button>
-      <button onclick="switchTab('scripts')">السكربتات</button>
-    </div><div id="supportTab" class="container">
-  <h2>الدعم الفني</h2>
-</div>
+    <div class="error-msg" id="errorMsg" style="display:none">الاسم أو كلمة المرور غير صحيحة!</div>
+    <div class="success-msg" id="successMsg" style="display:none">تم تسجيل الدخول بنجاح! مرحباً عزوز.</div>
+  </div>  <div id="mainInterface" class="container hidden">
+    <h2>مرحباً بك في النظام</h2>
+    <div class="main-buttons">
+      <button>زر 1</button>
+      <button>زر 2</button>
+    </div>
+    <div class="publish-box">نشر</div>
+  </div><script>
+  const mainPage = document.getElementById('mainPage');
+  const allowedPage = document.getElementById('allowedPage');
+  const allowedBtn = document.getElementById('allowedBtn');
+  const loginBtn = document.getElementById('loginBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const successMsg = document.getElementById('successMsg');
+  const mainInterface = document.getElementById('mainInterface');
+  const guestBtn = document.getElementById('guestBtn');
 
-<div id="scriptsTab" class="container hidden">
-  <h2>نشر سكربت</h2>
-  <textarea id="description" placeholder="شرح السكربت"></textarea>
-  <input type="file" id="imageInput" accept="image/*">
-  <textarea id="scriptContent" placeholder="ضع السكربت هنا"></textarea>
-  <button id="publishBtn">نشر</button>
-  <div id="publishedScripts"></div>
-</div>
+  allowedBtn.addEventListener('click', () => {
+    mainPage.classList.add('hidden');
+    allowedPage.classList.remove('hidden');
+    mainInterface.classList.add('hidden');
+  });
 
-  </div>  <script>
-    const mainPage = document.getElementById('mainPage');
-    const allowedPage = document.getElementById('allowedPage');
-    const allowedBtn = document.getElementById('allowedBtn');
-    const loginBtn = document.getElementById('loginBtn');
-    const errorMsg = document.getElementById('errorMsg');
-    const successMsg = document.getElementById('successMsg');
-    const mainInterface = document.getElementById('mainInterface');
-    const guestBtn = document.getElementById('guestBtn');
-    const publishBtn = document.getElementById('publishBtn');
-    const scriptsTab = document.getElementById('scriptsTab');
-    const supportTab = document.getElementById('supportTab');
-    const publishedScripts = document.getElementById('publishedScripts');
+  guestBtn.addEventListener('click', () => {
+    mainPage.classList.add('hidden');
+    allowedPage.classList.add('hidden');
+    mainInterface.classList.remove('hidden');
+  });
 
-    function switchTab(tab) {
-      supportTab.classList.add('hidden');
-      scriptsTab.classList.add('hidden');
-      if (tab === 'support') supportTab.classList.remove('hidden');
-      else if (tab === 'scripts') scriptsTab.classList.remove('hidden');
-    }
+  loginBtn.addEventListener('click', () => {
+    errorMsg.style.display = 'none';
+    successMsg.style.display = 'none';
 
-    allowedBtn.onclick = () => {
-      mainPage.classList.add('hidden');
-      allowedPage.classList.remove('hidden');
-    };
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
 
-    guestBtn.onclick = () => {
-      localStorage.setItem('isLoggedIn', 'guest');
-      mainPage.classList.add('hidden');
-      mainInterface.classList.remove('hidden');
-    };
-
-    loginBtn.onclick = () => {
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      errorMsg.style.display = 'none';
-      successMsg.style.display = 'none';
-
-      if(username === 'aziz' && password === 'aziz900'){
-        localStorage.setItem('isLoggedIn', 'admin');
-        successMsg.style.display = 'block';
-        setTimeout(() => {
-          allowedPage.classList.add('hidden');
-          mainInterface.classList.remove('hidden');
-        }, 800);
-      } else {
-        errorMsg.style.display = 'block';
-      }
-    };
-
-    publishBtn.onclick = () => {
-      const desc = document.getElementById('description').value;
-      const script = document.getElementById('scriptContent').value;
-      const image = document.getElementById('imageInput').files[0];
-
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const imgData = event.target.result;
-        const data = { desc, script, imgData };
-
-        let all = JSON.parse(localStorage.getItem('scripts') || '[]');
-        all.push(data);
-        localStorage.setItem('scripts', JSON.stringify(all));
-        renderScripts();
-      };
-
-      if(image){ reader.readAsDataURL(image); }
-    };
-
-    function renderScripts() {
-      publishedScripts.innerHTML = '';
-      const all = JSON.parse(localStorage.getItem('scripts') || '[]');
-      const isAdmin = localStorage.getItem('isLoggedIn') === 'admin';
-
-      all.forEach((item, index) => {
-        const box = document.createElement('div');
-        box.className = 'script-box';
-
-        if(item.imgData) {
-          const img = document.createElement('img');
-          img.src = item.imgData;
-          img.style.maxWidth = '100%';
-          box.appendChild(img);
-        }
-
-        const desc = document.createElement('p');
-        desc.textContent = item.desc;
-        box.appendChild(desc);
-
-        const pre = document.createElement('pre');
-        pre.textContent = item.script;
-        box.appendChild(pre);
-
-        const copyBtn = document.createElement('button');
-        copyBtn.textContent = 'نسخ السكربت';
-        copyBtn.onclick = () => navigator.clipboard.writeText(item.script);
-        box.appendChild(copyBtn);
-
-        if(isAdmin){
-          const deleteBtn = document.createElement('button');
-          deleteBtn.textContent = 'حذف';
-          deleteBtn.onclick = () => {
-            all.splice(index, 1);
-            localStorage.setItem('scripts', JSON.stringify(all));
-            renderScripts();
-          };
-          box.appendChild(deleteBtn);
-        }
-
-        publishedScripts.appendChild(box);
-      });
-    }
-
-    window.onload = () => {
-      const session = localStorage.getItem('isLoggedIn');
-      if(session === 'admin' || session === 'guest'){
-        mainPage.classList.add('hidden');
+    if(username === 'aziz' && password === 'aziz900'){
+      successMsg.style.display = 'block';
+      setTimeout(() => {
+        allowedPage.classList.add('hidden');
         mainInterface.classList.remove('hidden');
-        renderScripts();
-      }
+      }, 800);
+    } else {
+      errorMsg.style.display = 'block';
     }
-  </script></body>
-  </html>
+  });
+</script></body>
+            </html>
