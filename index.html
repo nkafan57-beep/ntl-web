@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>واجهة تسجيل دخول - نظام المسموح بهم فقط</title>
+  <title>نظام المسموح بهم فقط</title>
   <style>
     body {
       margin: 0;
@@ -31,9 +31,7 @@
       text-align: center;
       animation: fadeInUpSmooth 1.5s forwards;
     }
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
     h2 {
       margin-bottom: 30px;
       font-weight: 900;
@@ -62,42 +60,18 @@
       overflow: hidden;
       animation: fadeInUpSmooth 1.5s forwards;
     }
-    button::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: rgba(255, 255, 255, 0.2);
-      transform: rotate(45deg);
-      transition: all 0.7s ease;
-      pointer-events: none;
-      filter: blur(8px);
-      opacity: 0;
-    }
-    button:hover::before {
-      opacity: 1;
-      left: 100%;
-    }
     button:hover {
       background: linear-gradient(45deg, #ff4c4c, #aa0000);
       box-shadow: 0 8px 30px #ff1a1acc;
       transform: scale(1.07);
       animation: none;
     }
-    #guestBtn { animation-delay: 0.5s; }
-    #allowedBtn { animation-delay: 0.8s; }
-    @keyframes fadeInUpSmooth {
-      0% { opacity: 0; transform: translateY(40px); }
-      60% { opacity: 1; transform: translateY(-10px); }
-      80% { transform: translateY(5px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    input[type="text"], input[type="password"] {
-      width: 85%;
-      padding: 12px 25px;
-      margin: 12px auto;
+    input[type="text"],
+    input[type="password"],
+    textarea {
+      width: 90%;
+      padding: 12px 20px;
+      margin: 10px auto;
       display: block;
       border: none;
       border-radius: 12px;
@@ -106,128 +80,196 @@
       box-shadow: inset 0 0 8px #ff0000cc;
       background: rgba(30, 0, 0, 0.8);
       color: #fff;
-      transition: box-shadow 0.3s ease;
-      text-align: left;
     }
-    input[type="text"]:focus, input[type="password"]:focus {
-      box-shadow: 0 0 15px #ff4c4ccc;
+    .tabs-container {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      background: rgba(20, 0, 0, 0.8);
+      box-shadow: 0 0 20px #ff0000aa;
+      border-radius: 0 0 20px 20px;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+      backdrop-filter: blur(6px);
+      z-index: 999;
     }
-    .error-msg, .success-msg {
-      font-weight: 700;
+    .tabs-container button {
+      width: auto;
+      padding: 10px 20px;
+      margin: 0;
+      font-size: 14px;
+    }
+    #publishBtn {
+      margin-top: 30px;
+      width: 60%;
+      align-self: center;
+    }
+    .script-box {
+      background: rgba(50, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      box-shadow: 0 0 10px #ff0000aa;
+    }
+    .script-box button {
       margin-top: 10px;
-      display: none;
+      font-size: 14px;
     }
-    .error-msg { color: #ff5555; }
-    .success-msg { color: #55ff55; }.tabs {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  background: linear-gradient(270deg, #660000, #330000, #660000);
-  animation: waveAnimation 6s ease-in-out infinite;
-  padding: 20px;
-  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
-  align-items: center;
-  border-radius: 18px;
-  z-index: 999;
-}
-.tabs button {
-  padding: 12px 25px;
-  border-radius: 12px;
-  background: linear-gradient(45deg, #ff0000, #8b0000);
-  box-shadow: 0 3px 10px #ff0000cc;
-  color: white;
-  cursor: pointer;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.tabs button:hover {
-  background: linear-gradient(45deg, #ff4c4c, #aa0000);
-  box-shadow: 0 4px 15px #ff1a1acc;
-  transform: scale(1.05);
-}
-@keyframes waveAnimation {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-#mainContent {
-  margin-top: 140px;
-  text-align: center;
-  animation: fadeInUpSmooth 1.2s forwards;
-  padding: 0 15px;
-}
-#publishBtn {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 140px;
-  height: 45px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 700;
-  background: linear-gradient(45deg, #ff0000, #8b0000);
-  box-shadow: 0 5px 15px #ff0000cc;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  text-transform: uppercase;
-}
-#publishBtn:hover {
-  background: linear-gradient(45deg, #ff4c4c, #aa0000);
-  box-shadow: 0 7px 20px #ff1a1acc;
-  transform: scale(1.05);
-}
-
   </style>
 </head>
 <body>
-  <!-- هنا أكمل البنية الخاصة بك بناءً على هذا التصميم الجديد -->
-  <!-- قم بإضافة واجهة النشر، اختيار الصورة، التخزين المحلي، وإدارة الجلسة باستخدام localStorage -->  <script>
-    // حفظ الجلسة
-    const sessionKey = 'loggedIn';
+  <div id="mainPage" class="container">
+    <h2>تسجيل دخول</h2>
+    <button id="guestBtn">geust</button>
+    <button id="allowedBtn">المسموح بهم فقط</button>
+  </div>  <div id="allowedPage" class="container hidden">
+    <h2>المسموح بهم فقط</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off" />
+    <input type="password" id="password" placeholder="كلمة المرور" autocomplete="off" />
+    <button id="loginBtn">تأكيد</button>
+    <div class="error-msg" id="errorMsg">الاسم أو كلمة المرور غير صحيحة!</div>
+    <div class="success-msg" id="successMsg">تم تسجيل الدخول بنجاح! مرحباً عزوز.</div>
+  </div>  <div id="mainInterface" class="hidden">
+    <div class="tabs-container">
+      <button onclick="switchTab('support')">الدعم الفني</button>
+      <button onclick="switchTab('scripts')">السكربتات</button>
+    </div><div id="supportTab" class="container">
+  <h2>الدعم الفني</h2>
+</div>
 
-    // عند التحميل
-    window.onload = () => {
-      if (localStorage.getItem(sessionKey) === 'true') {
-        document.getElementById('mainPage').classList.add('hidden');
-        document.getElementById('mainInterface').classList.remove('hidden');
-        document.getElementById('publishBtn').classList.remove('hidden');
-      }
+<div id="scriptsTab" class="container hidden">
+  <h2>نشر سكربت</h2>
+  <textarea id="description" placeholder="شرح السكربت"></textarea>
+  <input type="file" id="imageInput" accept="image/*">
+  <textarea id="scriptContent" placeholder="ضع السكربت هنا"></textarea>
+  <button id="publishBtn">نشر</button>
+  <div id="publishedScripts"></div>
+</div>
+
+  </div>  <script>
+    const mainPage = document.getElementById('mainPage');
+    const allowedPage = document.getElementById('allowedPage');
+    const allowedBtn = document.getElementById('allowedBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+    const mainInterface = document.getElementById('mainInterface');
+    const guestBtn = document.getElementById('guestBtn');
+    const publishBtn = document.getElementById('publishBtn');
+    const scriptsTab = document.getElementById('scriptsTab');
+    const supportTab = document.getElementById('supportTab');
+    const publishedScripts = document.getElementById('publishedScripts');
+
+    function switchTab(tab) {
+      supportTab.classList.add('hidden');
+      scriptsTab.classList.add('hidden');
+      if (tab === 'support') supportTab.classList.remove('hidden');
+      else if (tab === 'scripts') scriptsTab.classList.remove('hidden');
+    }
+
+    allowedBtn.onclick = () => {
+      mainPage.classList.add('hidden');
+      allowedPage.classList.remove('hidden');
     };
 
-    // تسجيل الدخول
-    document.getElementById('loginBtn').addEventListener('click', () => {
+    guestBtn.onclick = () => {
+      localStorage.setItem('isLoggedIn', 'guest');
+      mainPage.classList.add('hidden');
+      mainInterface.classList.remove('hidden');
+    };
+
+    loginBtn.onclick = () => {
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
-      const errorMsg = document.getElementById('errorMsg');
-      const successMsg = document.getElementById('successMsg');
 
       errorMsg.style.display = 'none';
       successMsg.style.display = 'none';
 
-      if (username === 'aziz' && password === 'aziz900') {
+      if(username === 'aziz' && password === 'aziz900'){
+        localStorage.setItem('isLoggedIn', 'admin');
         successMsg.style.display = 'block';
-        localStorage.setItem(sessionKey, 'true');
         setTimeout(() => {
-          document.getElementById('allowedPage').classList.add('hidden');
-          document.getElementById('mainInterface').classList.remove('hidden');
-          document.getElementById('publishBtn').classList.remove('hidden');
+          allowedPage.classList.add('hidden');
+          mainInterface.classList.remove('hidden');
         }, 800);
       } else {
         errorMsg.style.display = 'block';
       }
-    });
+    };
 
-    // تسجيل دخول ضيف
-    document.getElementById('guestBtn').addEventListener('click', () => {
-      localStorage.removeItem(sessionKey);
-      document.getElementById('mainPage').classList.add('hidden');
-      document.getElementById('mainInterface').classList.remove('hidden');
-    });
+    publishBtn.onclick = () => {
+      const desc = document.getElementById('description').value;
+      const script = document.getElementById('scriptContent').value;
+      const image = document.getElementById('imageInput').files[0];
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const imgData = event.target.result;
+        const data = { desc, script, imgData };
+
+        let all = JSON.parse(localStorage.getItem('scripts') || '[]');
+        all.push(data);
+        localStorage.setItem('scripts', JSON.stringify(all));
+        renderScripts();
+      };
+
+      if(image){ reader.readAsDataURL(image); }
+    };
+
+    function renderScripts() {
+      publishedScripts.innerHTML = '';
+      const all = JSON.parse(localStorage.getItem('scripts') || '[]');
+      const isAdmin = localStorage.getItem('isLoggedIn') === 'admin';
+
+      all.forEach((item, index) => {
+        const box = document.createElement('div');
+        box.className = 'script-box';
+
+        if(item.imgData) {
+          const img = document.createElement('img');
+          img.src = item.imgData;
+          img.style.maxWidth = '100%';
+          box.appendChild(img);
+        }
+
+        const desc = document.createElement('p');
+        desc.textContent = item.desc;
+        box.appendChild(desc);
+
+        const pre = document.createElement('pre');
+        pre.textContent = item.script;
+        box.appendChild(pre);
+
+        const copyBtn = document.createElement('button');
+        copyBtn.textContent = 'نسخ السكربت';
+        copyBtn.onclick = () => navigator.clipboard.writeText(item.script);
+        box.appendChild(copyBtn);
+
+        if(isAdmin){
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'حذف';
+          deleteBtn.onclick = () => {
+            all.splice(index, 1);
+            localStorage.setItem('scripts', JSON.stringify(all));
+            renderScripts();
+          };
+          box.appendChild(deleteBtn);
+        }
+
+        publishedScripts.appendChild(box);
+      });
+    }
+
+    window.onload = () => {
+      const session = localStorage.getItem('isLoggedIn');
+      if(session === 'admin' || session === 'guest'){
+        mainPage.classList.add('hidden');
+        mainInterface.classList.remove('hidden');
+        renderScripts();
+      }
+    }
   </script></body>
-</html>
+  </html>
