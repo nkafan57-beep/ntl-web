@@ -62,10 +62,29 @@
       overflow: hidden;
       animation: fadeInUpSmooth 1.5s forwards;
     }
+    button::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(45deg);
+      transition: all 0.7s ease;
+      pointer-events: none;
+      filter: blur(8px);
+      opacity: 0;
+    }
+    button:hover::before {
+      opacity: 1;
+      left: 100%;
+    }
     button:hover {
       background: linear-gradient(45deg, #ff4c4c, #aa0000);
       box-shadow: 0 8px 30px #ff1a1acc;
       transform: scale(1.07);
+      animation: none;
     }
     #guestBtn { animation-delay: 0.5s; }
     #allowedBtn { animation-delay: 0.8s; }
@@ -75,7 +94,7 @@
       80% { transform: translateY(5px); }
       100% { opacity: 1; transform: translateY(0); }
     }
-    input[type="text"], input[type="password"], textarea {
+    input[type="text"], input[type="password"] {
       width: 85%;
       padding: 12px 25px;
       margin: 12px auto;
@@ -87,127 +106,128 @@
       box-shadow: inset 0 0 8px #ff0000cc;
       background: rgba(30, 0, 0, 0.8);
       color: #fff;
+      transition: box-shadow 0.3s ease;
+      text-align: left;
     }
-    #publishBtn {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 45px;
-      border-radius: 12px;
-      font-size: 16px;
+    input[type="text"]:focus, input[type="password"]:focus {
+      box-shadow: 0 0 15px #ff4c4ccc;
+    }
+    .error-msg, .success-msg {
       font-weight: 700;
-      background: linear-gradient(45deg, #ff0000, #8b0000);
-      box-shadow: 0 5px 15px #ff0000cc;
-      color: white;
-      cursor: pointer;
-      text-transform: uppercase;
+      margin-top: 10px;
+      display: none;
     }
+    .error-msg { color: #ff5555; }
+    .success-msg { color: #55ff55; }.tabs {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  background: linear-gradient(270deg, #660000, #330000, #660000);
+  animation: waveAnimation 6s ease-in-out infinite;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
+  align-items: center;
+  border-radius: 18px;
+  z-index: 999;
+}
+.tabs button {
+  padding: 12px 25px;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #ff0000, #8b0000);
+  box-shadow: 0 3px 10px #ff0000cc;
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.tabs button:hover {
+  background: linear-gradient(45deg, #ff4c4c, #aa0000);
+  box-shadow: 0 4px 15px #ff1a1acc;
+  transform: scale(1.05);
+}
+@keyframes waveAnimation {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+#mainContent {
+  margin-top: 140px;
+  text-align: center;
+  animation: fadeInUpSmooth 1.2s forwards;
+  padding: 0 15px;
+}
+#publishBtn {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 45px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(45deg, #ff0000, #8b0000);
+  box-shadow: 0 5px 15px #ff0000cc;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-transform: uppercase;
+}
+#publishBtn:hover {
+  background: linear-gradient(45deg, #ff4c4c, #aa0000);
+  box-shadow: 0 7px 20px #ff1a1acc;
+  transform: scale(1.05);
+}
+
   </style>
 </head>
 <body>
-<div id="mainPage" class="container">
-  <h2>تسجيل دخول</h2>
-  <button id="guestBtn">geust</button>
-  <button id="allowedBtn">المسموح بهم فقط</button>
-</div><div id="allowedPage" class="container hidden">
-  <h2>المسموح بهم فقط</h2>
-  <input type="text" id="username" placeholder="اسم المستخدم" />
-  <input type="password" id="password" placeholder="كلمة المرور" />
-  <button id="loginBtn">تأكيد</button>
-</div><div id="mainInterface" class="hidden">
-  <div class="tabs">
-    <button>الدعم الفني</button>
-    <button>التبويب 2</button>
-    <button>التبويب 3</button>
-  </div>
-  <div id="mainContent">
-    <h2>مرحباً بك في النظام</h2>
-  </div>
-  <button id="publishBtn">نشر</button>
-</div><div id="publishPage" class="container hidden">
-  <h2>نشر سكربت</h2>
-  <textarea id="scriptDescription" placeholder="اكتب شرح السكربت هنا..."></textarea>
-  <input type="file" id="imageInput" accept="image/*" />
-  <textarea id="scriptContent" placeholder="اكتب السكربت هنا..."></textarea>
-  <button id="finalPublishBtn">نشر الآن</button>
-</div><script>
-const guestBtn = document.getElementById('guestBtn');
-const allowedBtn = document.getElementById('allowedBtn');
-const loginBtn = document.getElementById('loginBtn');
-const publishBtn = document.getElementById('publishBtn');
-const finalPublishBtn = document.getElementById('finalPublishBtn');
+  <!-- هنا أكمل البنية الخاصة بك بناءً على هذا التصميم الجديد -->
+  <!-- قم بإضافة واجهة النشر، اختيار الصورة، التخزين المحلي، وإدارة الجلسة باستخدام localStorage -->  <script>
+    // حفظ الجلسة
+    const sessionKey = 'loggedIn';
 
-const mainPage = document.getElementById('mainPage');
-const allowedPage = document.getElementById('allowedPage');
-const mainInterface = document.getElementById('mainInterface');
-const publishPage = document.getElementById('publishPage');
-const mainContent = document.getElementById('mainContent');
+    // عند التحميل
+    window.onload = () => {
+      if (localStorage.getItem(sessionKey) === 'true') {
+        document.getElementById('mainPage').classList.add('hidden');
+        document.getElementById('mainInterface').classList.remove('hidden');
+        document.getElementById('publishBtn').classList.remove('hidden');
+      }
+    };
 
-allowedBtn.addEventListener('click', () => {
-  mainPage.classList.add('hidden');
-  allowedPage.classList.remove('hidden');
-});
+    // تسجيل الدخول
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      const successMsg = document.getElementById('successMsg');
 
-guestBtn.addEventListener('click', () => {
-  mainPage.classList.add('hidden');
-  mainInterface.classList.remove('hidden');
-  publishBtn.classList.add('hidden');
-});
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
 
-loginBtn.addEventListener('click', () => {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value.trim();
-  if (username === 'aziz' && password === 'aziz900') {
-    allowedPage.classList.add('hidden');
-    mainInterface.classList.remove('hidden');
-    publishBtn.classList.remove('hidden');
-  } else {
-    alert('الاسم أو كلمة المرور غير صحيحة');
-  }
-});
+      if (username === 'aziz' && password === 'aziz900') {
+        successMsg.style.display = 'block';
+        localStorage.setItem(sessionKey, 'true');
+        setTimeout(() => {
+          document.getElementById('allowedPage').classList.add('hidden');
+          document.getElementById('mainInterface').classList.remove('hidden');
+          document.getElementById('publishBtn').classList.remove('hidden');
+        }, 800);
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    });
 
-publishBtn.addEventListener("click", () => {
-  mainInterface.classList.add('hidden');
-  publishPage.classList.remove('hidden');
-});
-
-finalPublishBtn.addEventListener("click", () => {
-  const desc = document.getElementById("scriptDescription").value.trim();
-  const script = document.getElementById("scriptContent").value.trim();
-  const imgInput = document.getElementById("imageInput");
-  const file = imgInput.files[0];
-  if (!desc || !script || !file) return alert("يرجى ملء كل الخانات!");
-  const reader = new FileReader();
-  reader.onload = function () {
-    const imgBase64 = reader.result;
-    const post = { description: desc, script: script, image: imgBase64, id: Date.now() };
-    const oldPosts = JSON.parse(localStorage.getItem("scriptsData") || "[]");
-    oldPosts.push(post);
-    localStorage.setItem("scriptsData", JSON.stringify(oldPosts));
-    alert("تم النشر!");
-    location.reload();
-  };
-  reader.readAsDataURL(file);
-});
-
-window.addEventListener("load", () => {
-  const posts = JSON.parse(localStorage.getItem("scriptsData") || "[]");
-  posts.forEach(post => {
-    const div = document.createElement("div");
-    div.style = "background:#220000aa;padding:20px;margin:15px 0;border-radius:12px;box-shadow:0 0 15px #ff0000aa;";
-    div.innerHTML = `
-      <p><b>الشرح:</b> ${post.description}</p>
-      <img src="${post.image}" style="max-width:100%;border-radius:10px;margin:10px 0;">
-      <textarea readonly style="width:100%;height:100px;border:none;background:#1a0000;color:white;padding:10px;border-radius:10px;margin-bottom:10px;">${post.script}</textarea><button onclick="navigator.clipboard.writeText(\`${post.script}\`)">نسخ السكربت</button>
-  <button onclick="deleteScript(${post.id})" style="margin-left:10px;background:#660000;">حذف</button>
-`;
-mainContent.appendChild(div);
-
-}); });
-
-function deleteScript(id) { let posts = JSON.parse(localStorage.getItem("scriptsData") || "[]"); posts = posts.filter(p => p.id !== id); localStorage.setItem("scriptsData", JSON.stringify(posts)); location.reload(); } </script>
-
-</body>
+    // تسجيل دخول ضيف
+    document.getElementById('guestBtn').addEventListener('click', () => {
+      localStorage.removeItem(sessionKey);
+      document.getElementById('mainPage').classList.add('hidden');
+      document.getElementById('mainInterface').classList.remove('hidden');
+    });
+  </script></body>
 </html>
