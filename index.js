@@ -1,40 +1,21 @@
-const { Client, GatewayIntentBits } = require("discord.js");
+require('dotenv').config();
 
-// هنا حط التوكن تبع البوت
-const TOKEN = "MTM3NTE5MTU1MjUyNzQzMzc0OQ.Gdwz5m.t12HL0_nmQsi8fImui1odCmjSgKwTArfnQWcO0";
+const { Client, GatewayIntentBits } = require('discord.js');
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
-  ]
+const token = process.env.DISCORD_BOT_TOKEN;
+
+client.once('ready', () => {
+  console.log(`بوتك شغال تحت اسم: ${client.user.tag}`);
 });
 
-client.on("ready", () => {
-  console.log(`✅ تم تسجيل الدخول باسم: ${client.user.tag}`);
-  client.user.setActivity("شغال 24/7 🚀");
-});
-
-client.on("messageCreate", (message) => {
-  if (message.content === "ping") {
-    message.reply("🏓 pong");
+client.on('messageCreate', message => {
+  if (message.content === '!ping') {
+    message.channel.send('Pong!');
   }
 });
 
-client.login(TOKEN);
-
-// سيرفر بسيط يخلي البوت أونلاين على Render
-const express = require("express");
-const app = express();
-app.get("/", (req, res) => res.send("البوت شغال ✅"));
-app.listen(3000, () => console.log("🌐 السيرفر شغال على المنفذ 3000"));    .container {
-      background: rgba(20, 0, 0, 0.7);
-      padding: 40px 30px;
-      border-radius: 18px;
-      box-shadow: 0 0 25px #ff0000cc, 0 0 50px #8b0000aa;
-      width: 320px;
-      text-align: center;
+client.login(token);      text-align: center;
       animation: fadeInUpSmooth 1.5s forwards;
     }
     .hidden {
