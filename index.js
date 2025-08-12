@@ -2,9 +2,9 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const express = require('express');
 const app = express();
 
-// سيرفر بسيط يخلي Render يشوف إن البوت شغال
+// سيرفر بسيط يمنع Render من إطفاء البوت
 app.get('/', (req, res) => res.send('Bot is alive!'));
-app.listen(3000, () => console.log('Web server is running.'));
+app.listen(3000, () => console.log('🌐 Web server is running.'));
 
 const client = new Client({
     intents: [
@@ -14,7 +14,8 @@ const client = new Client({
     ]
 });
 
-const token = 'MTM3NTE5MTU1MjUyNzQzMzc0OQ.GwwiB4.KZQYrTumTwz5NSDez76sTGgsvKtWiKvq9Juy90';
+// التوكن من Environment Variables
+const token = process.env.TOKEN;
 
 client.once('ready', () => {
     console.log(`✅ Logged in as ${client.user.tag}`);
