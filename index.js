@@ -1,40 +1,34 @@
-<!DOCTYPE html><html lang="ar">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>واجهة تسجيل دخول - نظام المسموح بهم فقط</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: linear-gradient(120deg, #8b0000, #1a0000, #000000);
-      background-size: 400% 400%;
-      animation: fieryGradient 20s ease infinite;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      flex-direction: column;
-      padding-top: 50px;
-    }
-    @keyframes fieryGradient {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
-    .tabs {
-      display: flex;
-      gap: 20px;
-      background: rgba(20, 0, 0, 0.7);
-      padding: 15px 25px;
-      border-radius: 14px;
-      box-shadow: 0 0 20px #ff000080, 0 0 40px #8b000080;
-      margin-bottom: 30px;
-      backdrop-filter: blur(6px);
-      animation: fadeInUpSmooth 1.5s forwards;
-    }
-    .container {
+const { Client, GatewayIntentBits } = require("discord.js");
+
+// هنا حط التوكن تبع البوت
+const TOKEN = "MTM3NTE5MTU1MjUyNzQzMzc0OQ.Gdwz5m.t12HL0_nmQsi8fImui1odCmjSgKwTArfnQWcO0";
+
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
+});
+
+client.on("ready", () => {
+  console.log(`✅ تم تسجيل الدخول باسم: ${client.user.tag}`);
+  client.user.setActivity("شغال 24/7 🚀");
+});
+
+client.on("messageCreate", (message) => {
+  if (message.content === "ping") {
+    message.reply("🏓 pong");
+  }
+});
+
+client.login(TOKEN);
+
+// سيرفر بسيط يخلي البوت أونلاين على Render
+const express = require("express");
+const app = express();
+app.get("/", (req, res) => res.send("البوت شغال ✅"));
+app.listen(3000, () => console.log("🌐 السيرفر شغال على المنفذ 3000"));    .container {
       background: rgba(20, 0, 0, 0.7);
       padding: 40px 30px;
       border-radius: 18px;
