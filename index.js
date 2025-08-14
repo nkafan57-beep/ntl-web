@@ -1,15 +1,15 @@
-const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, PermissionFlagsBits } = require('discord.js');
-const axios = require('axios');
+// index.js
+import { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, PermissionFlagsBits } from 'discord.js';
+import WebSocket from 'ws';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 const TOKEN = process.env.DISCORD_TOKEN;
 
-// متغير لتخزين القناة المحددة
 let targetChannelId = null;
 
-// تسجيل أمر السلاش ديناميكي عند تشغيل البوت
+// تسجيل أمر السلاش عند تشغيل البوت
 client.once('ready', async () => {
-    console.log(`Logged in as ${client.user.tag}!`);
+    console.log(`✅ Logged in as ${client.user.tag}!`);
 
     const commands = [
         new SlashCommandBuilder()
@@ -25,16 +25,51 @@ client.once('ready', async () => {
 
     const rest = new REST({ version: '10' }).setToken(TOKEN);
     await rest.put(Routes.applicationCommands(client.user.id), { body: commands });
-    console.log('✅ أمر السلاش جاهز للاستخدام على أي سيرفر.');
+    console.log('✅ أمر السلاش جاهز للاستخدام.');
 });
 
-// دالة لجلب الستوك
-async function getStockData() {
-    try {
-        const response = await axios.get('https://gagstock.gleeze.com/grow-a-garden');
-        const stockData = response.data.data;
+// تنفيذ أمر السلاش لتحديد القناة
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isChatInputCommand()) return;
 
-        let stockMessage = '📦 الستوك الحالي:\n';
+    if (interaction.commandName === 'setstockchannel') {
+        const channel = interaction.options.getChannel('channel');
+        targetChannelId = channel.id;
+        await interaction.reply(`✅ تم تحديد القناة: ${channel} لإرسال الستوك تلقائيًا.`);
+    }
+});
+
+// الاتصال بالـ WebSocket الخاص بـ GAG Stock
+const ws = new WebSocket('wss://gagstock.gleeze.com');
+
+ws.on('open', () => {
+    console.log('🌐 متصل بالـ GAG Stock WebSocket');
+});
+
+ws.on('message', async (data) => {
+    try {
+        const parsed = JSON.parse(data);
+
+        if (!targetChannelId) return; // ما فيه قناة محددة بعد
+
+        const stockData = parsed.data;
+        if (!stockData) return;
+
+        let stockMessage = '📦 **الستوك الحالي:**\n';
+        Object.keys(stockData).forEach(category => {
+            const items = stockData[category].items.map(item => `${item.emoji} ${item.name}: ${item.quantity}`).join('\n');
+            stockMessage += `\n**${category.charAt(0).toUpperCase() + category.slice(1)}:**\n${items}\n`;
+        });
+
+        const channel = await client.channels.fetch(targetChannelId);
+        channel.send(stockMessage);
+
+    } catch (err) {
+        console.error('❌ خطأ عند استقبال التحديث:', err);
+    }
+});
+
+client.login(TOKEN);        let stockMessage = '📦 الستوك الحالي:\n';
         Object.keys(stockData).forEach(category => {
             const items = stockData[category].items.map(item => `${item.emoji} ${item.name}: ${item.quantity}`).join('\n');
             stockMessage += `\n**${category.charAt(0).toUpperCase() + category.slice(1)}:**\n${items}\n`;
