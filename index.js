@@ -1,110 +1,80 @@
-// index.js
-import { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, PermissionFlagsBits } from 'discord.js';
+import { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } from 'discord.js';
 import WebSocket from 'ws';
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
-const TOKEN = process.env.DISCORD_TOKEN;
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-let targetChannelId = null;
+// خزن القناة التي يريد المستخدم أن تُرسل فيها الرسائل
+let stockChannelId = null;
 
-// تسجيل أمر السلاش عند تشغيل البوت
-client.once('ready', async () => {
-    console.log(`✅ Logged in as ${client.user.tag}!`);
+// أمر سلاش لتحديد القناة
+const commands = [
+    new SlashCommandBuilder()
+        .setName('setstockchannel')
+        .setDescription('حدد القناة التي سيتم إرسال ستوك البوت فيها')
+        .addChannelOption(option =>
+            option.setName('channel')
+                .setDescription('القناة')
+                .setRequired(true))
+        .toJSON()
+];
 
-    const commands = [
-        new SlashCommandBuilder()
-            .setName('setstockchannel')
-            .setDescription('حدد القناة التي يرسل فيها البوت الستوك')
-            .addChannelOption(option =>
-                option.setName('channel')
-                      .setDescription('اختر القناة')
-                      .setRequired(true)
-            )
-            .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-    ].map(cmd => cmd.toJSON());
+const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
-    const rest = new REST({ version: '10' }).setToken(TOKEN);
-    await rest.put(Routes.applicationCommands(client.user.id), { body: commands });
-    console.log('✅ أمر السلاش جاهز للاستخدام.');
+// تسجيل أمر السلاش عالميًا
+(async () => {
+    try {
+        await rest.put(
+            Routes.applicationCommands(process.env.CLIENT_ID),
+            { body: commands }
+        );
+        console.log('✅ تم تسجيل أوامر السلاش');
+    } catch (err) {
+        console.error(err);
+    }
+})();
+
+client.on('ready', () => {
+    console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
-// تنفيذ أمر السلاش لتحديد القناة
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
+    if (!interaction.isCommand()) return;
 
     if (interaction.commandName === 'setstockchannel') {
         const channel = interaction.options.getChannel('channel');
-        targetChannelId = channel.id;
-        await interaction.reply(`✅ تم تحديد القناة: ${channel} لإرسال الستوك تلقائيًا.`);
+        stockChannelId = channel.id;
+        await interaction.reply({ content: `تم تحديد القناة: ${channel}`, ephemeral: true });
     }
 });
 
-// الاتصال بالـ WebSocket الخاص بـ GAG Stock
+// الاتصال بالـ GAG Stock WebSocket
 const ws = new WebSocket('wss://gagstock.gleeze.com');
 
 ws.on('open', () => {
-    console.log('🌐 متصل بالـ GAG Stock WebSocket');
+    console.log('🔗 متصل بـ GAG Stock WebSocket');
 });
 
-ws.on('message', async (data) => {
-    try {
-        const parsed = JSON.parse(data);
+ws.on('message', async data => {
+    if (!stockChannelId) return;
 
-        if (!targetChannelId) return; // ما فيه قناة محددة بعد
-
-        const stockData = parsed.data;
-        if (!stockData) return;
+    const msgData = JSON.parse(data);
+    if (msgData.type === 'grow-a-garden') {
+        const stock = msgData.data;
 
         let stockMessage = '📦 **الستوك الحالي:**\n';
-        Object.keys(stockData).forEach(category => {
-            const items = stockData[category].items.map(item => `${item.emoji} ${item.name}: ${item.quantity}`).join('\n');
-            stockMessage += `\n**${category.charAt(0).toUpperCase() + category.slice(1)}:**\n${items}\n`;
-        });
 
-        const channel = await client.channels.fetch(targetChannelId);
-        channel.send(stockMessage);
+        for (const category of ['egg','gear','seed','honey','cosmetics','travelingmerchant']) {
+            if (stock[category] && stock[category].items) {
+                stockMessage += `\n**${category.toUpperCase()}:**\n`;
+                stock[category].items.forEach(item => {
+                    stockMessage += `${item.emoji || ''} ${item.name} × ${item.quantity}\n`;
+                });
+            }
+        }
 
-    } catch (err) {
-        console.error('❌ خطأ عند استقبال التحديث:', err);
-    }
-});
-
-client.login(TOKEN);        let stockMessage = '📦 الستوك الحالي:\n';
-        Object.keys(stockData).forEach(category => {
-            const items = stockData[category].items.map(item => `${item.emoji} ${item.name}: ${item.quantity}`).join('\n');
-            stockMessage += `\n**${category.charAt(0).toUpperCase() + category.slice(1)}:**\n${items}\n`;
-        });
-
-        return stockMessage;
-    } catch (error) {
-        console.error(error);
-        return '❌ حدث خطأ أثناء جلب البيانات.';
-    }
-}
-
-// عند تنفيذ أوامر السلاش
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
-
-    if (interaction.commandName === 'setstockchannel') {
-        const channel = interaction.options.getChannel('channel');
-        targetChannelId = channel.id;
-
-        await interaction.reply(`✅ تم تحديد القناة: ${channel} لإرسال الستوك تلقائيًا.`);
-
-        // أرسل الستوك مباشرة بعد تحديد القناة
-        const stockMessage = await getStockData();
+        const channel = await client.channels.fetch(stockChannelId);
         channel.send(stockMessage);
     }
 });
 
-// تحديث دوري كل 10 دقائق
-setInterval(async () => {
-    if (targetChannelId) {
-        const channel = await client.channels.fetch(targetChannelId);
-        const stockMessage = await getStockData();
-        channel.send(stockMessage);
-    }
-}, 600000); // كل 10 دقائق
-
-client.login(TOKEN);
+client.login(process.env.TOKEN);
